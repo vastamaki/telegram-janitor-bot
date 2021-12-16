@@ -1,0 +1,23 @@
+{
+  "name": "permission-janitor-bot",
+  "version": "1.0.0",
+  "description": "permission-janitor-bot",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vastamaki/permission-janitor-bot.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/vastamaki/permission-janitor-bot/issues"
+  },
+  "homepage": "https://github.com/vastamaki/permission-janitor-bot#readme",
+  "dependencies": {
+    "better-sqlite3": "^7.4.5",
+    "node-telegram-bot-api": "^0.56.0"
+  }
+}
