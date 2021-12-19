@@ -38,7 +38,10 @@ const onMessage = async (msg, bot) => {
 
     const challenge_message = await bot.sendMessage(
       chatId,
-      `Tere @${user.username}! Kirjotteleppa ihan ekana tänne numeroin et mit mahtaa ol ${primary_challenge} ynnättynä ${secondary_challenge}? Harkihte tarkkaan, muuten joudun potkimaa sut täält veke. Täs vaa vähä funtsin et teikäläine suattaa olla botti.`
+      `Tere [${user.first_name}](tg://user?id=${user.id})! Kirjotteleppa ihan ekana tänne numeroin et mit mahtaa ol ${primary_challenge} ynnättynä ${secondary_challenge}? Harkihte tarkkaan, muuten joudun potkimaa sut täält veke. Täs vaa vähä funtsin et teikäläine suattaa olla botti.`,
+      {
+        parse_mode: "Markdown",
+      }
     );
 
     saveToDb(
