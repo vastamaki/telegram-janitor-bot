@@ -70,7 +70,7 @@ const onMessage = async (msg, bot) => {
     await addNewUser(msg.new_chat_members[i]);
   }
 
-  const user = getPendingUser(userId);
+  const user = getPendingUser(userId, chatId);
 
   if (message && user) {
     if (parseInt(message) === user.challenge) {
@@ -104,7 +104,7 @@ const onMessage = async (msg, bot) => {
     }
     await bot.deleteMessage(chatId, msg.message_id);
     await bot.deleteMessage(chatId, user.messageId);
-    removeFromDb("pendingUsers", `userId = ${userId}`);
+    removeFromDb("pendingUsers", `userId = ${userId} and chatId = ${chatId}`);
   }
 };
 

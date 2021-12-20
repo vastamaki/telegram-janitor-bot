@@ -22,8 +22,10 @@ const removeFromDb = (table, search_condition) => {
   sql.prepare(sqlQuery).run();
 };
 
-const getPendingUser = (userId) => {
-  return sql.prepare(`SELECT * FROM pendingUsers WHERE userId = ?`).get(userId);
+const getPendingUser = (userId, chatId) => {
+  return sql
+    .prepare(`SELECT * FROM pendingUsers WHERE userId = ? and chatId = ?`)
+    .get(userId, chatId);
 };
 
 module.exports = {
