@@ -1,4 +1,5 @@
 const { saveToDb, getPendingUser, removeFromDb } = require("./helpers.js");
+const { OWNER_ID } = require("./secrets.json");
 
 const primary_challenges = [
   "kymmene",
@@ -76,9 +77,12 @@ const onMessage = async (msg, bot) => {
       try {
         const release_message = await bot.sendMessage(
           chatId,
-          `@${
-            message.username || message.first_name || message.last_name
-          } näyttääpi siltä et oot suamalaine!`
+          `Näyttääpi siltä [${
+            msg.from.username || msg.from.first_name || msg.from.last_name
+          }](tg://user?id=${msg.from.id}) et on suamalaine!`,
+          {
+            parse_mode: "Markdown",
+          }
         );
 
         setTimeout(
@@ -87,12 +91,14 @@ const onMessage = async (msg, bot) => {
           10000
         );
       } catch (err) {
+        await bot.sendMessage(OWNER_ID, JSON.stringify(err));
         console.log("ERROR", err);
       }
     } else {
       try {
         await bot.banChatMember(chatId, msg.from.id);
       } catch (err) {
+        await bot.sendMessage(OWNER_ID, JSON.stringify(err));
         console.log("ERROR", err);
       }
     }
