@@ -77,9 +77,9 @@ const onMessage = async (msg, bot) => {
       try {
         const release_message = await bot.sendMessage(
           chatId,
-          `Näyttääpi siltä [${
+          `Näyttääpi siltä et [${
             msg.from.username || msg.from.first_name || msg.from.last_name
-          }](tg://user?id=${msg.from.id}) et on suamalaine!`,
+          }](tg://user?id=${msg.from.id}) on suamalaine!`,
           {
             parse_mode: "Markdown",
           }
