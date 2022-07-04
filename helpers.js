@@ -28,8 +28,17 @@ const getPendingUser = (userId, chatId) => {
     .get(userId, chatId);
 };
 
+const getAllUsersOlderThan5Minutes = () => {
+  return sql
+    .prepare(
+      `SELECT * FROM pendingUsers WHERE timestamp <= Datetime('now', '-5 minutes', 'localtime')`
+    )
+    .all();
+};
+
 module.exports = {
   saveToDb,
   getPendingUser,
   removeFromDb,
+  getAllUsersOlderThan5Minutes,
 };
