@@ -8,3 +8,5 @@ services:
       - stack.env
     restart: unless-stopped
     network_mode: "host"
+    volumes:
+      - ./db:/db
