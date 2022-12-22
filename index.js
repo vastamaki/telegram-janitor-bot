@@ -1,11 +1,12 @@
 const TelegramBot = require("node-telegram-bot-api");
-const { token } = require("./secrets.json");
 const { onMessage } = require("./onMessage");
 const { onStart } = require("./onStart");
 const schedule = require("node-schedule");
 const { getAllUsersOlderThan5Minutes, removeFromDb } = require("./helpers");
 
-const bot = new TelegramBot(token, { polling: true });
+const { TG_TOKEN } = process.env;
+
+const bot = new TelegramBot(TG_TOKEN, { polling: true });
 
 bot.on("message", async (msg) => {
   onMessage(msg, bot);

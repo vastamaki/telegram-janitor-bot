@@ -1,5 +1,5 @@
 const { saveToDb, getPendingUser, removeFromDb } = require("./helpers.js");
-const { OWNER_ID } = require("./secrets.json");
+const { OWNER_ID } = process.env;
 
 const primary_challenges = [
   "kymmene",
