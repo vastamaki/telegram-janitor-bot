@@ -1,8 +1,8 @@
-const TelegramBot = require("node-telegram-bot-api");
-const { onMessage } = require("./onMessage");
-const { onStart } = require("./onStart");
-const schedule = require("node-schedule");
-const { getAllUsersOlderThan5Minutes, removeFromDb } = require("./helpers");
+import schedule from "node-schedule";
+import TelegramBot from "node-telegram-bot-api";
+
+import { getAllUsersOlderThan5Minutes, removeFromDb, sql } from "./helpers.js";
+import { onMessage } from "./onMessage.js";
 
 const { TG_TOKEN } = process.env;
 
@@ -12,7 +12,11 @@ bot.on("message", async (msg) => {
   onMessage(msg, bot);
 });
 
-onStart();
+sql
+  .prepare(
+    `CREATE TABLE IF NOT EXISTS pendingUsers(chatId STRING, userId STRING, challenge STRING, username STRING, messageId STRING, timestamp DATETIME DEFAULT CURRENT_TIMESTAMP)`
+  )
+  .run();
 
 const banTooOldUsers = async () => {
   const users = getAllUsersOlderThan5Minutes();

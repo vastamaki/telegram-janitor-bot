@@ -1,4 +1,5 @@
-const { saveToDb, getPendingUser, removeFromDb } = require("./helpers.js");
+import { saveToDb, getPendingUser, removeFromDb } from "./helpers.js";
+
 const { OWNER_ID } = process.env;
 
 const primary_challenges = [
@@ -24,7 +25,7 @@ const secondary_challenges = [
   "yhreksän",
 ];
 
-const onMessage = async (msg, bot) => {
+export const onMessage = async (msg, bot) => {
   const chatId = msg.chat.id;
   const userId = msg.from.id;
   const message = msg.text;
@@ -106,8 +107,4 @@ const onMessage = async (msg, bot) => {
     await bot.deleteMessage(chatId, user.messageId);
     removeFromDb("pendingUsers", `userId = ${userId} and chatId = ${chatId}`);
   }
-};
-
-module.exports = {
-  onMessage,
 };

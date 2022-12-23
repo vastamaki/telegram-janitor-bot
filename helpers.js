@@ -1,7 +1,7 @@
-const SQLite = require("better-sqlite3");
-const sql = new SQLite(`${__dirname}/data.sqlite`);
+import SQLite from "better-sqlite3";
+export const sql = new SQLite(`/db/data.sqlite`);
 
-const saveToDb = (data, table) => {
+export const saveToDb = (data, table) => {
   const keys = Object.keys(data);
   let insert = "";
   Object.keys(data).forEach((i, idx, array) => {
@@ -17,28 +17,21 @@ const saveToDb = (data, table) => {
   sql.prepare(sqlQuery).run();
 };
 
-const removeFromDb = (table, search_condition) => {
+export const removeFromDb = (table, search_condition) => {
   const sqlQuery = `DELETE FROM ${table} WHERE ${search_condition}`;
   sql.prepare(sqlQuery).run();
 };
 
-const getPendingUser = (userId, chatId) => {
+export const getPendingUser = (userId, chatId) => {
   return sql
     .prepare(`SELECT * FROM pendingUsers WHERE userId = ? and chatId = ?`)
     .get(userId, chatId);
 };
 
-const getAllUsersOlderThan5Minutes = () => {
+export const getAllUsersOlderThan5Minutes = () => {
   return sql
     .prepare(
       `SELECT * FROM pendingUsers WHERE timestamp <= Datetime('now', '-5 minutes', 'localtime')`
     )
     .all();
-};
-
-module.exports = {
-  saveToDb,
-  getPendingUser,
-  removeFromDb,
-  getAllUsersOlderThan5Minutes,
 };
