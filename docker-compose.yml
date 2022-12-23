@@ -9,4 +9,7 @@ services:
     restart: unless-stopped
     network_mode: "host"
     volumes:
-      - ./db:/db
+      - db:/db
+
+volumes:
+  db:
