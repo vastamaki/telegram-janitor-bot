@@ -74,9 +74,13 @@ export const onMessage = async (msg, bot) => {
     .select("*")
     .where("userId", "=", userId)
     .andWhere("chatId", "=", chatId)
+    .andWhere("answered", "=", false)
+    .orderBy("timestamp", "desc")
+    .limit(1)
     .first();
 
   if (message && user) {
+    console.log(message, user.challenge);
     if (parseInt(message) === user.challenge) {
       try {
         const release_message = await bot.sendMessage(
@@ -104,7 +108,10 @@ export const onMessage = async (msg, bot) => {
       try {
         await bot.banChatMember(chatId, msg.from.id);
       } catch (err) {
-        await bot.sendMessage(process.env.OWNER_ID, JSON.stringify(err));
+        await bot.sendMessage(
+          process.env.OWNER_ID,
+          `Invalid challenge, failed to ban ${msg.from.username}`
+        );
         console.error("ERROR", err);
       }
     }
