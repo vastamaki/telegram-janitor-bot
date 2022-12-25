@@ -64,3 +64,9 @@ const banTooOldUsers = async () => {
 schedule.scheduleJob("*/5 * * * *", banTooOldUsers);
 
 banTooOldUsers();
+
+try {
+  await bot.sendMessage(process.env.OWNER_ID, "I just started successfully");
+} catch (err) {
+  console.error("FAILED TO INITIALIZE");
+}
