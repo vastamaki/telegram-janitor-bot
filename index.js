@@ -1,3 +1,6 @@
+import * as dotenv from "dotenv";
+dotenv.config({ path: "./stack.env" });
+
 import knex from "knex";
 import schedule from "node-schedule";
 import TelegramBot from "node-telegram-bot-api";
