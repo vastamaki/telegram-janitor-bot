@@ -34,7 +34,7 @@ export const onMessage = async (msg, bot) => {
     const primary_challenge = primary_challenges[rand1];
     const secondary_challenge = secondary_challenges[rand2];
 
-    const answer = parseInt(rand1.toString() + "0" + 1) + (rand2 + 1);
+    const answer = parseInt((rand1 + 1).toString() + "0") + (rand2 + 1);
 
     try {
       const challenge_message = await bot.sendMessage(
