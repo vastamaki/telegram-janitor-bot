@@ -1,6 +1,4 @@
-import { saveToDb, getPendingUser, removeFromDb } from "./helpers.js";
-
-const { OWNER_ID } = process.env;
+import { db } from "./index.js";
 
 const primary_challenges = [
   "kymmene",
@@ -31,35 +29,36 @@ export const onMessage = async (msg, bot) => {
   const message = msg.text;
 
   const addNewUser = async (user) => {
-    const rand1 = Math.floor(Math.random() * primary_challenges.length);
-    const rand2 = Math.floor(Math.random() * primary_challenges.length);
+    const rand1 = Math.floor(Math.random() * primary_challenges.length) + 1;
+    const rand2 = Math.floor(Math.random() * primary_challenges.length) + 1;
     const primary_challenge = primary_challenges[rand1];
     const secondary_challenge = secondary_challenges[rand2];
 
-    const answer = parseInt((rand1 + 1).toString() + "0") + (rand2 + 1);
+    const answer = parseInt(rand1.toString() + "0") + rand2;
 
-    const challenge_message = await bot.sendMessage(
-      chatId,
-      `Tere [${
-        user.username || user.first_name || user.last_name
-      }](tg://user?id=${
-        user.id
-      })! Kirjotteleppa ihan ekana tänne numeroin et mit mahtaa ol ${primary_challenge} ynnättynä ${secondary_challenge}? Harkihte tarkkaan, muuten joudun potkimaa sut täält veke. Täs vaa vähä funtsin et teikäläine suattaa olla botti.`,
-      {
-        parse_mode: "Markdown",
-      }
-    );
+    try {
+      const challenge_message = await bot.sendMessage(
+        chatId,
+        `Tere [${
+          user.username || user.first_name || user.last_name
+        }](tg://user?id=${
+          user.id
+        })! Kirjotteleppa ihan ekan tänne numeroin et mit mahtaa ol ${primary_challenge} ynnättynä ${secondary_challenge}? Harkihte tarkkaan, muuten joudun potkimaa sut täält veke. Täs vaa vähä funtsin et teikäläine suattaa olla botti.`,
+        {
+          parse_mode: "Markdown",
+        }
+      );
 
-    saveToDb(
-      {
+      await db("pending_users").insert({
         chatId,
         username: user.username,
         userId: user.id,
         challenge: answer,
         messageId: challenge_message.message_id,
-      },
-      "pendingUsers"
-    );
+      });
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   if (message === "debug") {
@@ -71,7 +70,10 @@ export const onMessage = async (msg, bot) => {
     await addNewUser(msg.new_chat_members[i]);
   }
 
-  const user = getPendingUser(userId, chatId);
+  const user = await db("pending_users")
+    .select("*")
+    .where("userId", "=", userId)
+    .andWhere("chatId", "=", chatId);
 
   if (message && user) {
     if (parseInt(message) === user.challenge) {
@@ -86,25 +88,42 @@ export const onMessage = async (msg, bot) => {
           }
         );
 
-        setTimeout(
-          async () =>
-            await bot.deleteMessage(chatId, release_message.message_id),
-          10000
-        );
+        setTimeout(async () => {
+          try {
+            await bot.deleteMessage(chatId, release_message.message_id);
+          } catch (err) {
+            console.error("FAILED TO REMOVE MESSAGE", err);
+          }
+        }, 10000);
       } catch (err) {
-        await bot.sendMessage(OWNER_ID, JSON.stringify(err));
-        console.log("ERROR", err);
+        await bot.sendMessage(process.env.OWNER_ID, JSON.stringify(err));
+        console.error("ERROR", err);
       }
     } else {
       try {
         await bot.banChatMember(chatId, msg.from.id);
       } catch (err) {
-        await bot.sendMessage(OWNER_ID, JSON.stringify(err));
-        console.log("ERROR", err);
+        await bot.sendMessage(process.env.OWNER_ID, JSON.stringify(err));
+        console.error("ERROR", err);
       }
     }
-    await bot.deleteMessage(chatId, msg.message_id);
-    await bot.deleteMessage(chatId, user.messageId);
-    removeFromDb("pendingUsers", `userId = ${userId} and chatId = ${chatId}`);
+
+    try {
+      await bot.deleteMessage(chatId, msg.message_id);
+      await bot.deleteMessage(chatId, user.messageId);
+    } catch (err) {
+      console.error("FAILED TO REMOVE MESSAGES");
+    }
+
+    try {
+      await db("pending_users")
+        .update({
+          answered: true,
+        })
+        .where("userId", "=", userId)
+        .andWhere("chatId", "=", chatId);
+    } catch (err) {
+      console.error("FAILED TO UPDATE DATABASE");
+    }
   }
 };

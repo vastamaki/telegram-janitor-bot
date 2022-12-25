@@ -18,7 +18,12 @@
   },
   "homepage": "https://github.com/vastamaki/permission-janitor-bot#readme",
   "dependencies": {
-    "better-sqlite3": "^8.0.1",
+    "@types/dotenv": "^8.2.0",
+    "@types/knex": "^0.16.1",
+    "@types/mysql": "^2.15.21",
+    "dotenv": "^16.0.3",
+    "knex": "^2.3.0",
+    "mysql": "^2.18.1",
     "node-schedule": "^2.1.0",
     "node-telegram-bot-api": "^0.60.0"
   }

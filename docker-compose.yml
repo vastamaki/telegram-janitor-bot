@@ -2,14 +2,10 @@ version: '3'
 
 services:
   janitor-bot:
+    container_name: permission-bot
     build:
       dockerfile: Dockerfile
     env_file:
       - stack.env
     restart: unless-stopped
     network_mode: "host"
-    volumes:
-      - db:/db
-
-volumes:
-  db:
