@@ -29,12 +29,12 @@ export const onMessage = async (msg, bot) => {
   const message = msg.text;
 
   const addNewUser = async (user) => {
-    const rand1 = Math.floor(Math.random() * primary_challenges.length) + 1;
-    const rand2 = Math.floor(Math.random() * primary_challenges.length) + 1;
+    const rand1 = Math.floor(Math.random() * primary_challenges.length);
+    const rand2 = Math.floor(Math.random() * primary_challenges.length);
     const primary_challenge = primary_challenges[rand1];
     const secondary_challenge = secondary_challenges[rand2];
 
-    const answer = parseInt(rand1.toString() + "0") + rand2;
+    const answer = parseInt(rand1.toString() + "0" + 1) + (rand2 + 1);
 
     try {
       const challenge_message = await bot.sendMessage(
