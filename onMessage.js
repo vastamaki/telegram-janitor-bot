@@ -73,7 +73,8 @@ export const onMessage = async (msg, bot) => {
   const user = await db("pending_users")
     .select("*")
     .where("userId", "=", userId)
-    .andWhere("chatId", "=", chatId);
+    .andWhere("chatId", "=", chatId)
+    .first();
 
   if (message && user) {
     if (parseInt(message) === user.challenge) {
