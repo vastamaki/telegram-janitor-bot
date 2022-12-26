@@ -75,12 +75,11 @@ export const onMessage = async (msg, bot) => {
     .where("userId", "=", userId)
     .andWhere("chatId", "=", chatId)
     .andWhere("answered", "=", false)
-    .orderBy("timestamp", "desc")
+    .orderBy("createdAt", "desc")
     .limit(1)
     .first();
 
   if (message && user) {
-    console.log(message, user.challenge);
     if (parseInt(message) === user.challenge) {
       try {
         const release_message = await bot.sendMessage(

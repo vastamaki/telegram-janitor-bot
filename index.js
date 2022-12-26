@@ -41,7 +41,7 @@ bot.on("message", async (msg) => {
 const banTooOldUsers = async () => {
   const users = await db("pending_users")
     .select("*")
-    .where("timestamp", "<=", "Datetime('now', '-5 minutes', 'localtime')")
+    .where("createdAt", "<=", db.raw("(now() - INTERVAL 5 MINUTE)"))
     .andWhere("answered", "=", false);
 
   for (const i in users) {
@@ -51,14 +51,15 @@ const banTooOldUsers = async () => {
       console.error("FAILED TO REMOVE MESSAGE");
     }
     try {
-      console.log(users[i]);
       await bot.banChatMember(users[i].chatId, users[i].userId);
     } catch (err) {
       console.error("FAILED TO REMOVE MEMBER");
     }
 
     await db("pending_users")
-      .delete()
+      .update({
+        banned: true,
+      })
       .where("userId", "=", users[i].userId)
       .andWhere("chatId", "=", users[i].chatId);
   }
