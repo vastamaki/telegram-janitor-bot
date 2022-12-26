@@ -42,7 +42,7 @@ const banTooOldUsers = async () => {
   const users = await db("pending_users")
     .select("*")
     .where("createdAt", "<=", db.raw("(now() - INTERVAL 5 MINUTE)"))
-    .andWhere("answered", "=", false);
+    .andWhere("banned", "=", false);
 
   for (const i in users) {
     try {
