@@ -10,9 +10,10 @@ services:
       - stack.env
     restart: unless-stopped
     networks:
-      - mariadb
+      lan:
+        ipv4_address: 10.10.2.38
 
 networks:
-  mariadb:
-    name: MariaDB
+  lan:
+    name: LAN
     external: true
