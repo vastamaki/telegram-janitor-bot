@@ -8,7 +8,7 @@ import TelegramBot from "node-telegram-bot-api";
 import { onMessage } from "./onMessage.js";
 
 export const db = knex({
-  client: "mysql",
+  client: "mysql2",
   connection: {
     host: process.env.DB_HOST,
     port: process.env.DB_PORT,
